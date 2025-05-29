@@ -5,6 +5,7 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import ( GPT2LMHeadModel, GPT2Tokenizer, AdamW, get_linear_schedule_with_warmup)
 from .config import TrainingConfig
+from .data_utils import create_dataloaders
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -30,6 +31,22 @@ class Trainer:
 
         # Initialize scheduler
         self.scheduler = None # We'll set this up when we have the dataloader
+
+        # Create dataloaders
+        self.train_dataloader, self.val_dataloader = create_dataloaders(
+            tokenizer=self.tokenizer,
+            train_file=config.train_file,
+            val_file=config.val_file,
+            config=config
+        )
+
+        # Now we can set up the scheduler with the correct number of steps
+        num_training_steps = len(self.train_dataloader) * config.max_epochs
+        self.scheduler = get_linear_schedule_with_warmup(
+            self.optimizer,
+            num_warmup_steps=config.warmup_steps,
+            num_training_steps=num_training_steps
+        )
 
     def _setup_optimizer(self):
         """Initialize the optimizer with weight decay."""
