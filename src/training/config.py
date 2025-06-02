@@ -13,8 +13,10 @@ class TrainingConfig:
     batch_size: int = 8
     gradient_accumulation_steps: int = 4  # Effective batch size = batch_size * gradient_accumulation_steps
     max_epochs: int = 3
+    max_steps: Optional[int] = None  # If set, training will stop after this many steps
     warmup_steps: int = 1000
     weight_decay: float = 0.01
+    max_grad_norm: float = 1.0  
     
     # Data Configuration
     train_file: str = "data/train.txt"  # Path to training data
@@ -33,6 +35,7 @@ class TrainingConfig:
     save_steps: int = 1000
     eval_steps: int = 1000
     save_total_limit: Optional[int] = 3  # Number of checkpoints to keep
+    save_best_only: bool = True  # If True, only save when eval loss improves
     
     # Device Configuration
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
