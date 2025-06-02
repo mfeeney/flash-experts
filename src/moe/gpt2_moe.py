@@ -91,7 +91,7 @@ class GPT2MoEBlock(nn.Module):
             use_cache: Whether to use caching
             output_attentions: Whether to output attention weights
             past_key_value: Optional past key/value states
-            cache_position: Optional cache position tensor
+            cache_position: Optional tensor indicating positions in the cache
             
         Returns:
             Tuple containing:
@@ -115,6 +115,7 @@ class GPT2MoEBlock(nn.Module):
             head_mask=head_mask,
             use_cache=use_cache,
             output_attentions=output_attentions,
+            cache_position=cache_position,
         )
         
         # Get attention output and present state
@@ -194,6 +195,7 @@ class GPT2MoEModel(GPT2LMHeadModel):
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
         return_dict: Optional[bool] = None,
+        cache_position: Optional[torch.LongTensor] = None,
     ) -> CausalLMOutputWithCrossAttentions:
         """
         Forward pass of the model.
@@ -213,6 +215,7 @@ class GPT2MoEModel(GPT2LMHeadModel):
             output_attentions: Whether to output attention weights
             output_hidden_states: Whether to output hidden states
             return_dict: Whether to return a dictionary
+            cache_position: Optional tensor indicating positions in the cache
             
         Returns:
             Model outputs including:
@@ -240,6 +243,7 @@ class GPT2MoEModel(GPT2LMHeadModel):
             output_attentions=output_attentions,
             output_hidden_states=output_hidden_states,
             return_dict=return_dict,
+            cache_position=cache_position,
         )
         
         # Collect MoE auxiliary losses
@@ -256,9 +260,18 @@ class GPT2MoEModel(GPT2LMHeadModel):
             if moe_losses:
                 moe_loss = torch.stack(moe_losses).mean()
                 if isinstance(outputs, CausalLMOutputWithCrossAttentions):
-                    outputs.loss = outputs.loss + moe_loss
+                    # Only add MoE loss if we have a base loss (i.e., during training with labels)
+                    if outputs.loss is not None:
+                        outputs.loss = outputs.loss + moe_loss
+                    else:
+                        # During generation, just store the MoE loss separately
+                        outputs.moe_loss = moe_loss
                 else:
-                    outputs = (outputs[0] + moe_loss,) + outputs[1:]
+                    # Handle non-dict outputs
+                    if len(outputs) > 0 and outputs[0] is not None:
+                        outputs = (outputs[0] + moe_loss,) + outputs[1:]
+                    else:
+                        outputs = (moe_loss,) + outputs[1:]
         
         return outputs
     

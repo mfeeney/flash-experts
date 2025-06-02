@@ -1,14 +1,19 @@
-# setup.py
+"""
+Setup script for Flash Experts package.
+"""
+
 from setuptools import setup, find_packages
 
 setup(
     name="flash-experts",
     version="0.1.0",
-    package_dir={"": "src"},  # Tell setuptools packages are under src/
-    packages=find_packages(where="src"),  # Look for packages in src/
+    description="GPT-2 with Flash Attention and Mixture of Experts",
+    author="Your Name",
+    packages=find_packages(),
     install_requires=[
-        "torch",
-        "transformers",
-        "tqdm",
+        "torch>=2.0.0",
+        "transformers>=4.30.0",
+        "tqdm>=4.65.0",
     ],
+    python_requires=">=3.8",
 )

@@ -1,3 +1,18 @@
+# Model files and checkpoints
+fine_tuned_model/
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.safetensors
+
+# Training artifacts
+runs/
+wandb/
+*.log
+*.csv
+*.jsonl
+
 # Python
 __pycache__/
 *.py[cod]
@@ -31,19 +46,14 @@ ENV/
 *.swp
 *.swo
 
+# OS
+.DS_Store
+Thumbs.db
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Model files and checkpoints
-*.pt
-*.pth
-*.ckpt
-*.bin
-checkpoints/
-models/
-
 # Logs and databases
-*.log
 *.sqlite
 logs/
 
