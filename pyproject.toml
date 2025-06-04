@@ -3,15 +3,15 @@ requires = ["setuptools>=64.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "flash-experts"
+name = "flash_experts"
 version = "0.1.0"
 description = "GPT-2 with Flash Attention and Mixture of Experts"
 requires-python = ">=3.8"
+authors = [
+    {name = "Matt Feeney"}
+]
 dependencies = [
     "torch>=2.0.0",
     "transformers>=4.30.0",
     "tqdm>=4.65.0",
-]
-
-[tool.setuptools]
-packages = ["src"] 
+] 

@@ -20,6 +20,7 @@ pandas>=2.0.0
 tqdm>=4.65.0
 einops>=0.6.0  # For tensor operations
 sentencepiece>=0.1.99  # For tokenization
+requests>=2.31.0  # For API calls
 
 # Testing and code quality
 pytest>=7.3.1
