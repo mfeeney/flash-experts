@@ -50,7 +50,7 @@ This project helps you understand:
 
 1. Clone the repository:
    ```bash
-   git clone [repository-url]
+   git clone https://github.com/mfeeney/flash-experts.git
    cd flash-experts
    ```
 
